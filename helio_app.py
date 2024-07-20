@@ -1,8 +1,13 @@
-"""Helio Application"""
 import os
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from analyze import analyze_video
+import logging
+from shutil import copyfile
+from pathlib import Path
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Initialize FastAPI
 app = FastAPI()
@@ -19,11 +24,17 @@ async def analyze_video_endpoint(file: UploadFile = File(...), labels: str = "")
 
     # Analyze the video
     try:
+        logging.debug(f"Starting analysis for video: {video_path} with labels: {filter_labels_list}")
         result = analyze_video(video_path, filter_labels_list)
+        logging.debug(f"Analysis result: {result}")
         return JSONResponse(content=result)
     except Exception as e:
+        logging.error(f"Error during video analysis: {e}")
         return JSONResponse(content={"error": str(e)}, status_code=500)
     finally:
+        # save the video file for debugging purposes to a separate location, overwrite if already exists
+        v_path = Path(video_path)
+        copyfile(v_path, '/home/abogg/Downloads/' + v_path.name)
         if os.path.exists(video_path):
             os.remove(video_path)
 

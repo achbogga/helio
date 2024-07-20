@@ -12,6 +12,10 @@ from pytorchvideo.transforms import (
     ShortSideScale,
     UniformTemporalSubsample,
 )
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Load the slowfast_r50 model
 model = torch.hub.load('facebookresearch/pytorchvideo', 'slowfast_r50', pretrained=True)
@@ -83,23 +87,24 @@ def analyze_video(
     returns:
      - timestamped_labels_dict (dict): Dictionary containing timestamps (begin, end) and predicted labels.
     """
-    print (f'filter_labels_list: {filter_labels_list}')
     from tqdm import tqdm
+
+    logging.debug(f"Analyzing video: {video_path}")
 
     # Initialize EncodedVideo helper class and load the video
     video = EncodedVideo.from_path(video_path)
 
     # get the number of frames based on the video fps
     clip_duration = video.duration
-    num_frames =  int(fps * clip_duration)
+    num_frames = int(fps * clip_duration)
     timestamped_labels_dict = {}
     for i in tqdm(range(0, num_frames, int(window_size * fps))):
         start_sec = int(i / fps)
         end_sec = start_sec + window_size
         predicted_labels = classify_video(video, start_sec, end_sec, filter_labels_list)
         if predicted_labels:
-            timestamped_labels_dict[(start_sec, end_sec)] = predicted_labels
-    print (timestamped_labels_dict)
+            timestamped_labels_dict[f"{start_sec}-{end_sec}"] = predicted_labels
+    logging.debug(f"Timestamped labels dict: {timestamped_labels_dict}")
     return timestamped_labels_dict 
 
 
@@ -119,6 +124,8 @@ def classify_video(
     Returns:
     - filtered_label
     """
+
+    logging.debug(f"Classifying video from {start_sec}s to {end_sec}s")
 
     # Load the desired clip from the video
     video_data = video.get_clip(start_sec=start_sec, end_sec=end_sec)
@@ -145,6 +152,7 @@ def classify_video(
     # Filter predicted labels based on filter_labels_list
     filtered_pred_class_names = [label for label in pred_class_names if any(filter_label.lower() in label.lower() for filter_label in filter_labels_list)]
 
+    logging.debug(f"Filtered predicted class names: {filtered_pred_class_names}")
     return filtered_pred_class_names
 
 # Example usage
