@@ -74,7 +74,7 @@ transform =  ApplyTransformToKey(
 )
 
 def analyze_video(
-        url_link,
+        video_path,
         filter_labels_list,
         window_size=5, # seconds
         fps = 30, # frames per second
@@ -84,12 +84,6 @@ def analyze_video(
      - timestamped_labels_dict (dict): Dictionary containing timestamps (begin, end) and predicted labels.
     """
     from tqdm import tqdm
-    # Download the video file
-    video_path = 'video.mp4'
-    try:
-        urllib.URLopener().retrieve(url_link, video_path)
-    except:
-        urllib.request.urlretrieve(url_link, video_path)
 
     # Initialize EncodedVideo helper class and load the video
     video = EncodedVideo.from_path(video_path)
@@ -117,7 +111,7 @@ def classify_video(
     Function to classify actions in a video and filter based on provided labels.
 
     Args:
-    - url_link (str): URL link to the video file.
+    - video_path (str): Path to the video file.
     - filter_labels_list (list of str): List of labels to filter predictions.
 
     Returns:
@@ -152,8 +146,7 @@ def classify_video(
     return filtered_pred_class_names
 
 # Example usage
-url_link = "https://dl.fbaipublicfiles.com/pytorchvideo/projects/archery.mp4"
-filter_labels_list = ['squat', 'jumping jacks', 'archery']
-
-predicted_labels_dict = analyze_video(url_link, filter_labels_list)
-print("Predicted labels with timestamps: ", predicted_labels_dict)
+# url_link = "https://dl.fbaipublicfiles.com/pytorchvideo/projects/archery.mp4"
+# filter_labels_list = ['squat', 'jumping jacks', 'archery']
+# predicted_labels_dict = analyze_video(url_link, filter_labels_list)
+# print("Predicted labels with timestamps: ", predicted_labels_dict)

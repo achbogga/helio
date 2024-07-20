@@ -1,9 +1,7 @@
 """Helio Application"""
 import os
-
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-
 from analyze import analyze_video
 
 # Initialize FastAPI
