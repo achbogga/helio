@@ -120,6 +120,7 @@ def classify_video(
     Args:
     - video_path (str): Path to the video file.
     - filter_labels_list (list of str): List of labels to filter predictions.
+        if empty, no filtering is applied.
 
     Returns:
     - filtered_label
@@ -150,6 +151,10 @@ def classify_video(
     pred_class_names = [kinetics_id_to_classname[int(i)] for i in pred_classes]
 
     # Filter predicted labels based on filter_labels_list
+    # if filter_labels_list is empty, return all predicted labels
+    if not filter_labels_list:
+        logging.debug(f"Predicted class names: {pred_class_names}")
+        return pred_class_names
     filtered_pred_class_names = [label for label in pred_class_names if any(filter_label.lower() in label.lower() for filter_label in filter_labels_list)]
 
     logging.debug(f"Filtered predicted class names: {filtered_pred_class_names}")

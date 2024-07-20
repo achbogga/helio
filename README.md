@@ -14,3 +14,8 @@ python3 -m pip install -r requirements.txt
 ```
 python3 helio_app.py
 ```
+
+- App is currently running at the following endpoint: http://34.72.202.95:8000/docs
+- you can filter for certain actions, if you leave the labels empty, it will return all the actions it detects
+- You can send a POST request with a video file to get responses for each 5 seconds of the video
+- There is a mobile app which is connected to the endpoint and the relative code is in the mobile_app folder
