@@ -83,6 +83,7 @@ def analyze_video(
     returns:
      - timestamped_labels_dict (dict): Dictionary containing timestamps (begin, end) and predicted labels.
     """
+    print (f'filter_labels_list: {filter_labels_list}')
     from tqdm import tqdm
 
     # Initialize EncodedVideo helper class and load the video
@@ -98,6 +99,7 @@ def analyze_video(
         predicted_labels = classify_video(video, start_sec, end_sec, filter_labels_list)
         if predicted_labels:
             timestamped_labels_dict[(start_sec, end_sec)] = predicted_labels
+    print (timestamped_labels_dict)
     return timestamped_labels_dict 
 
 
